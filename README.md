@@ -1,5 +1,3 @@
 # SELD-quadcopter
 
-This is linux push 
-
-connection test
+The feature extraction directory contains the necessary code in order to extract whistle sound out of white background noises. You can find the prerequisite .wav file from a youtube video, in which the video ID can be found in resouces.txt. It's necessary to pre-slice the intro and outro out of the extracted audio thus the .wav file will only contain whistle sound and background noise
