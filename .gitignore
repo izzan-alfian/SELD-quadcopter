@@ -1,3 +1,3 @@
 # Dataset location
-feature_extraction/resources/
-feature_extraction/whistles/
+dataset_generator/whistle_extraction/resources/
+dataset_generator/sounds/
