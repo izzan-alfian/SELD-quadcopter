@@ -7,7 +7,7 @@ import threading
 import queue
 import struct
 
-# --- Configuration ---
+# --- Assigned ESP32 ports ---
 A_SERIAL_PORT = '/dev/ttyACM0'
 B_SERIAL_PORT = '/dev/ttyACM1'
 BAUD_RATE = 4000000

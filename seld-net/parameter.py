@@ -82,6 +82,15 @@ def get_params(argv):
         params['batch_size'] = 32
 
     elif argv == '9':
+        params['dataset'] = 'drone_filtered'
+        params['batch_size'] = 4
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = False
+        params['db'] = 50
+        params['dropout_rate'] = 0.01 # to simulate audio dropoff caused by misaligned inmp441
+
+    elif argv == '10':
         params['dataset'] = 'drone'
         params['batch_size'] = 4
         params['sequence_length'] = 512

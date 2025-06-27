@@ -11,9 +11,11 @@ from scipy.io import wavfile
 
 whistles_directory           = "./dataset_generator/sounds/whistles"
 motor_noise_directory        = "./dataset_generator/sounds/augmented_drone_motor_noises"
+
 wav_result_directory         = "./dataset_generator/sounds/8_channel_microphone_signals/wav"
 description_result_directory = "./dataset_generator/sounds/8_channel_microphone_signals/description"
 temp_directory               = "./dataset_generator/sounds/8_channel_microphone_signals/temp"
+
 seconds_length = 30
 sr = 44100
 snr_db = -5
@@ -34,8 +36,6 @@ mic_positions = np.array([
     [ 0.0615, -0.0420, -0.0410],
     [ 0.0615,  0.0420,  0.0410],
     ]).T
-
-
 
 
 

@@ -32,8 +32,10 @@ class FeatureClass:
             self._base_folder = os.path.join('/proj/asignal/TUT_SELD/', 'moving_sound_events_foa/')
         elif dataset == 'mreal':
             self._base_folder = os.path.join('/proj/asignal/TUT_SELD/', 'tut_seld_movingdata_foa/')
-        elif dataset == 'drone':
+        elif dataset == 'drone_filtered':
             self._base_folder = './dataset_generator/sounds/filtered_8_channel_microphone_signals'
+        elif dataset == 'drone':
+            self._base_folder = './dataset_generator/sounds/8_channel_microphone_signals'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
