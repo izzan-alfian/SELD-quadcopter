@@ -51,7 +51,9 @@ def get_params(argv):
     # Different datasets
     elif argv == '2':  # anechoic simulated Ambisonic data set
         params['dataset'] = 'ansim'
+        params['batch_size'] = 2
         params['sequence_length'] = 512
+        params['quick_test'] = False
 
     elif argv == '3':  # reverberant simulated Ambisonic data set
         params['dataset'] = 'resim'
@@ -83,12 +85,12 @@ def get_params(argv):
 
     elif argv == '9':
         params['dataset'] = 'drone_filtered'
-        params['batch_size'] = 4
+        params['batch_size'] = 2
         params['sequence_length'] = 512
         params['quick_test'] = False
         params['azi_only'] = False
         params['db'] = 50
-        params['dropout_rate'] = 0.01 # to simulate audio dropoff caused by misaligned inmp441
+        # params['dropout_rate'] = 0.01 # to simulate audio dropoff caused by misaligned inmp441
 
     elif argv == '10':
         params['dataset'] = 'drone'
@@ -96,6 +98,30 @@ def get_params(argv):
         params['sequence_length'] = 512
         params['quick_test'] = False
         params['azi_only'] = False
+        params['db'] = 50
+    
+    elif argv == '11':
+        params['dataset'] = '1m_8channel_1class_drone'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = False
+        params['db'] = 50
+
+    elif argv == '12':
+        params['dataset'] = '1m_8channel_1class'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = False
+        params['db'] = 50
+
+    elif argv == '13':
+        params['dataset'] = '0.002m_8channel_1class'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = True
         params['db'] = 50
 
     else:

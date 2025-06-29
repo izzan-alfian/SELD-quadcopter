@@ -198,7 +198,7 @@ def main(argv):
                 2*np.arcsin(doa_loss[epoch_cnt, 1]/2.0)/np.pi,
                 1 - (doa_loss[epoch_cnt, 5] / float(doa_gt.shape[0]))]
             )
-        plot_functions(unique_name, tr_loss, val_loss, sed_loss, doa_loss, epoch_metric_loss)
+        plot_functions(unique_name + '.png', tr_loss, val_loss, sed_loss, doa_loss, epoch_metric_loss)
 
         patience_cnt += 1
         if epoch_metric_loss[epoch_cnt] < best_metric:
@@ -212,12 +212,14 @@ def main(argv):
             'epoch_cnt: %d, time: %.2fs, tr_loss: %.2f, val_loss: %.2f, '
             'F1_overall: %.2f, ER_overall: %.2f, '
             'doa_error_gt: %.2f, doa_error_pred: %.2f, good_pks_ratio:%.2f, '
-            'error_metric: %.2f, best_error_metric: %.2f, best_epoch : %d' %
+            'error_metric: %.2f, best_error_metric: %.2f, best_epoch : %d '
+            'doa_overall_error: %.2f' %
             (
                 epoch_cnt, time.time() - start, tr_loss[epoch_cnt], val_loss[epoch_cnt],
                 sed_loss[epoch_cnt, 1], sed_loss[epoch_cnt, 0],
                 doa_loss[epoch_cnt, 1], doa_loss[epoch_cnt, 2], doa_loss[epoch_cnt, 5] / float(sed_gt.shape[0]),
-                epoch_metric_loss[epoch_cnt], best_metric, best_epoch
+                epoch_metric_loss[epoch_cnt], best_metric, best_epoch,
+                doa_loss[epoch_cnt, 0]
             )
         )
         if patience_cnt > params['patience']:

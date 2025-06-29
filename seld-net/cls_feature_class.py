@@ -19,7 +19,7 @@ class FeatureClass:
         # TODO: Change the path according to your machine.
         # TODO: It should point to a folder which consists of sub-folders for audio and metada
         if dataset == 'ansim':
-            self._base_folder = './datasets/ANSIM'
+            self._base_folder = './dataset_generator/sounds/ANSIM'
         elif dataset == 'resim':
             self._base_folder = os.path.join('/proj/asignal/TUT_SELD/', 'doa_data_echoic/')
         elif dataset == 'cansim':
@@ -36,6 +36,12 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/filtered_8_channel_microphone_signals'
         elif dataset == 'drone':
             self._base_folder = './dataset_generator/sounds/8_channel_microphone_signals'
+        elif dataset == '1m_8channel_1class_drone':
+            self._base_folder = './dataset_generator/sounds/1m_8channel_1class_drone_mic_signals'
+        elif dataset == '1m_8channel_1class':
+            self._base_folder = './dataset_generator/sounds/1m_8channel_1class_mic_signals'
+        elif dataset == '0.002m_8channel_1class':
+            self._base_folder = './dataset_generator/sounds/0.002m_8channel_1class_mic_signals'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -85,6 +91,11 @@ class FeatureClass:
                 {
                     'whistle_sound': 0
                 }
+        elif '1class' in self._dataset:
+            self._unique_classes = \
+                {
+                    'whistle_sound': 0
+                }
         else:
             # DCASE 2016 Task 2 sound events
             self._unique_classes = \
@@ -111,13 +122,13 @@ class FeatureClass:
         self._resolution = 10
         self._azi_list = range(-180, 180, self._resolution)
         self._length = len(self._azi_list)
-        self._ele_list = range(-60, 60, self._resolution)
+        self._ele_list = range(-90, 90, self._resolution)
         self._height = len(self._ele_list)
         self._weakness = None
 
         # For regression task only
         self._default_azi = 180
-        self._default_ele = 60
+        self._default_ele = 90
 
         if self._default_azi in self._azi_list:
             print('ERROR: chosen default_azi value {} should not exist in azi_list'.format(self._default_azi))

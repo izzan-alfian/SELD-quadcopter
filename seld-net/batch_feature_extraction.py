@@ -3,7 +3,7 @@
 
 import cls_feature_class
 
-dataset_name = 'drone'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
+dataset_name = '0.002m_8channel_1class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 
 # Extracts feature and labels for all overlap and splits
 for ovo in [1, 2, 3]:  # SE overlap. Change to [1] if you are only calculating the features for overlap 1.
