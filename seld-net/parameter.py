@@ -53,7 +53,6 @@ def get_params(argv):
         params['dataset'] = 'ansim'
         params['batch_size'] = 2
         params['sequence_length'] = 512
-        params['quick_test'] = False
 
     elif argv == '3':  # reverberant simulated Ambisonic data set
         params['dataset'] = 'resim'
@@ -123,6 +122,41 @@ def get_params(argv):
         params['quick_test'] = False
         params['azi_only'] = True
         params['db'] = 50
+        params['loss_weights'] = [1., 400.]
+
+    elif argv == '14':
+        params['dataset'] = '0.120m_8channel_3class'
+        params['batch_size'] = 1
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 50
+        params['nb_cnn2d_filt'] = 128
+        params['loss_weights'] = [1., 100.]
+        params['pool_size'] = [8, 8, 4]
+        params['rnn_size'] = [256, 256]
+        params['fnn_size'] = [256]
+
+    elif argv == '15':  # anechoic simulated Ambisonic data set
+        params['dataset'] = 'ansim'
+        params['batch_size'] = 1
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 30
+        params['nb_cnn2d_filt'] = 128
+        params['loss_weights'] = [1., 50.]
+        params['pool_size'] = [8, 8, 4]
+        params['rnn_size'] = [256, 256]
+        params['fnn_size'] = [256]
+
+    elif argv == '16':  # ANSIM clone
+        params['dataset'] = 'ansim_clone'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 30
 
     else:
         print('ERROR: unknown argument {}'.format(argv))

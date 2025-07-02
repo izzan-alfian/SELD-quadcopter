@@ -42,6 +42,10 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/1m_8channel_1class_mic_signals'
         elif dataset == '0.002m_8channel_1class':
             self._base_folder = './dataset_generator/sounds/0.002m_8channel_1class_mic_signals'
+        elif dataset == '0.120m_8channel_3class':
+            self._base_folder = './dataset_generator/sounds/0.120m_8channel_3class_mic_signals'
+        elif dataset == 'ansim_clone':
+            self._base_folder = './dataset_generator/sounds/ANSIM_clone'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -95,6 +99,13 @@ class FeatureClass:
             self._unique_classes = \
                 {
                     'whistle_sound': 0
+                }
+        elif '3class' in self._dataset:
+            self._unique_classes = \
+                {
+                    'whistle_sound': 0,
+                    'siren_sound': 1,
+                    'scream_sound': 2,
                 }
         else:
             # DCASE 2016 Task 2 sound events
@@ -188,6 +199,8 @@ class FeatureClass:
             split_line = line.strip().split(',')
             if 'real' in self._dataset:
                 desc_file['class'].append(split_line[0].split('.')[0].split('-')[1])
+            if '3class' in self._dataset:
+                desc_file['class'].append(split_line[0].split('.')[0])
             else:
                 desc_file['class'].append(split_line[0].split('.')[0][:-3])
             desc_file['start'].append(int(np.floor(float(split_line[1])*self._frame_res)))
