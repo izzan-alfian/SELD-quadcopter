@@ -9,6 +9,8 @@ from tensorflow.keras.layers import BatchNormalization
 from keras.models import Model
 from tensorflow.keras.layers import TimeDistributed
 from keras.optimizers import Adam
+from tensorflow.keras.layers import MultiHeadAttention
+
 import keras
 keras.backend.set_image_data_format('channels_first')
 from IPython import embed
@@ -34,6 +36,9 @@ def get_model(data_in, data_out, dropout_rate, nb_cnn2d_filt, pool_size,
                 return_sequences=True),
             merge_mode='mul'
         )(spec_rnn)
+
+    # att = MultiHeadAttention(num_heads=2, key_dim=64)(spec_rnn, spec_rnn)
+    # spec_rnn = spec_rnn + att
 
     doa = spec_rnn
     for nb_fnn_filt in fnn_size:

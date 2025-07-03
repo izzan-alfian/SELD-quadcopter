@@ -46,6 +46,8 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/0.120m_8channel_3class_mic_signals'
         elif dataset == 'ansim_clone':
             self._base_folder = './dataset_generator/sounds/ANSIM_clone'
+        elif dataset == 'ansim_clone_matlab':
+            self._base_folder = './dataset_generator/ANSIM_clone_matlab/dataset_generator/sounds/ANSIM_clone'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -68,9 +70,11 @@ class FeatureClass:
         self._eps = np.spacing(float(1e-16))
 
         # If circular-array 8 channels else 4 for Ambisonic
-        if ('c' in self._dataset):
+        if ('drone' in self._dataset):
             self._nb_channels = 8
-        elif ('drone' in self._dataset):
+        elif ('ansim_clone' in self._dataset):
+            self._nb_channels = 4
+        elif ('c' in self._dataset):
             self._nb_channels = 8
         else:
             self._nb_channels = 4

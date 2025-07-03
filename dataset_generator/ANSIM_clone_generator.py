@@ -41,6 +41,9 @@ def sph2cart(az, el, r):
     z = r * np.sin(el)
     return x, y, z
 
+def deg2rad(deg):
+    return deg * (np.pi / 180)
+
 def read_csv(file_name):
     desc_file = {
         'class': list(), 'start': list(), 'end': list(), 'ele': list(), 'azi': list(), 'dist': list()
@@ -70,11 +73,23 @@ def generate_sound(csv_dict):
         sound_filename = sound_event
         fs, sound = wav.read(RAW_DIRECTORY / sound_filename)
         delay = csv_dict['start'][idx]
-        x, y, z = sph2cart(csv_dict['azi'][idx], csv_dict['ele'][idx], csv_dict['dist'][idx])
+        x, y, z = sph2cart(deg2rad(csv_dict['azi'][idx]), deg2rad(csv_dict['ele'][idx]), deg2rad(csv_dict['dist'][idx]))
         room.add_source([x, y, z], signal=sound, delay=delay)
-
+    
     room.simulate()
-    return room.mic_array.signals
+    clean_signal = room.mic_array.signals
+    print(type(clean_signal))
+
+    # --- Start: Add noise with a specific SNR ---
+    snr_db = 30.0
+    signal_power = np.mean(clean_signal**2)
+    snr_linear = 10 ** (snr_db / 10.0)
+    noise_power = signal_power / snr_linear
+    noise = np.random.normal(loc=0, scale=np.sqrt(noise_power), size=clean_signal.shape)
+    noisy_signal = clean_signal + noise
+    # --- End: Add noise with a specific SNR ---
+
+    return noisy_signal
 
 def normalize_and_save_all_wavs():
     print("\n--- Normalizing all signals and saving to .wav ---")
@@ -102,6 +117,7 @@ def normalize_and_save_all_wavs():
         print(f"Processing {temp_file_path.name}")
         signal = np.load(temp_file_path)
         signal_normalized = signal / global_max_amplitude
+        signal_normalized = np.int16(signal_normalized * 32767)
         
         wav_file_name = temp_file_path.stem + ".wav"
         wav_file_path = WAV_DIRECTORY / wav_file_name

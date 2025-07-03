@@ -139,21 +139,26 @@ def get_params(argv):
 
     elif argv == '15':  # anechoic simulated Ambisonic data set
         params['dataset'] = 'ansim'
-        params['batch_size'] = 1
+        params['batch_size'] = 2
         params['sequence_length'] = 512
         params['quick_test'] = False
         params['azi_only'] = True
         params['db'] = 30
-        params['nb_cnn2d_filt'] = 128
-        params['loss_weights'] = [1., 50.]
-        params['pool_size'] = [8, 8, 4]
-        params['rnn_size'] = [256, 256]
-        params['fnn_size'] = [256]
 
     elif argv == '16':  # ANSIM clone
         params['dataset'] = 'ansim_clone'
         params['batch_size'] = 2
         params['sequence_length'] = 512
+        params['loss_weights'] = [1., 25.]
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 30
+
+    elif argv == '17':  # ANSIM clone matlab
+        params['dataset'] = 'ansim_clone_matlab'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 25.]
         params['quick_test'] = False
         params['azi_only'] = True
         params['db'] = 30

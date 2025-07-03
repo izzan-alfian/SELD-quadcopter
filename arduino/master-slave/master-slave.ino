@@ -57,7 +57,6 @@ void i2s_mic_task(void *parameter) {
     }
 
     // Buffer to hold 16-bit samples for serial transmission
-    // Number of samples = I2S_READ_BUFFER_SIZE_BYTES / sizeof(int32_t)
     int num_samples = I2S_READ_BUFFER_SIZE_BYTES / sizeof(int32_t);
     int16_t* A0_serial_write_buffer = (int16_t*)malloc(num_samples * sizeof(int16_t));
     int16_t* A1_serial_write_buffer = (int16_t*)malloc(num_samples * sizeof(int16_t));
