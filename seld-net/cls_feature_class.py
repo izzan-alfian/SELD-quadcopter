@@ -50,6 +50,8 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m'
         elif dataset == 'ansim_clone_0.120m_whistle':
             self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle'
+        elif dataset == 'ansim_clone_0.120m_whistle_drone':
+            self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle_drone'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -97,11 +99,6 @@ class FeatureClass:
                     '7': 5,
                     '8': 6,
                     '9': 7
-                }
-        elif 'drone' in self._dataset:
-            self._unique_classes = \
-                {
-                    'whistle_sound': 0
                 }
         elif '1class' in self._dataset:
             self._unique_classes = \

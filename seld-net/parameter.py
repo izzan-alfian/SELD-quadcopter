@@ -172,6 +172,15 @@ def get_params(argv):
         params['azi_only'] = True
         params['db'] = 30
 
+    elif argv == '19':
+        params['dataset'] = 'ansim_clone_0.120m_whistle_drone'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 30
+
     else:
         print('ERROR: unknown argument {}'.format(argv))
         exit()

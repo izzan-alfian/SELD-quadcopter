@@ -71,7 +71,7 @@ def generate_sound(csv_dict):
         sound_filename = sound_event
         fs, sound = wav.read(RAW_DIRECTORY / sound_filename)
         delay = csv_dict['start'][idx]
-        x, y, z = sph2cart(deg2rad(csv_dict['azi'][idx]), deg2rad(csv_dict['ele'][idx]), deg2rad(csv_dict['dist'][idx]))
+        x, y, z = sph2cart(deg2rad(csv_dict['azi'][idx]), deg2rad(csv_dict['ele'][idx]), csv_dict['dist'][idx])
         room.add_source([x, y, z], signal=sound, delay=delay)
     
     room.simulate()
