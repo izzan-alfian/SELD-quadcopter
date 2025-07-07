@@ -149,16 +149,25 @@ def get_params(argv):
         params['dataset'] = 'ansim_clone'
         params['batch_size'] = 2
         params['sequence_length'] = 512
-        params['loss_weights'] = [1., 25.]
+        params['loss_weights'] = [1., 50.]
         params['quick_test'] = False
         params['azi_only'] = True
         params['db'] = 30
 
-    elif argv == '17':  # ANSIM clone matlab
-        params['dataset'] = 'ansim_clone_matlab'
+    elif argv == '17':
+        params['dataset'] = 'ansim_clone_0.120m'
         params['batch_size'] = 2
         params['sequence_length'] = 512
-        params['loss_weights'] = [1., 25.]
+        params['loss_weights'] = [1., 50.]
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 30
+
+    elif argv == '18':
+        params['dataset'] = 'ansim_clone_0.120m_whistle'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
         params['quick_test'] = False
         params['azi_only'] = True
         params['db'] = 30

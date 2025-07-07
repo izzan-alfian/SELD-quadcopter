@@ -1,8 +1,7 @@
 import os
 import librosa
 import numpy as np
-import soundfile as sf
-from scipy.io.wavfile import write
+import scipy.io.wavfile as wav
 
 hop_lenght = 512
 window_size = 1024
@@ -16,6 +15,7 @@ for file_name in os.listdir(cut_whistle_directory):
     if 'cut' in file_name:
         cut_whistle_path = os.path.join(cut_whistle_directory, file_name)
         cut_whisle_file, sr = librosa.load(cut_whistle_path, sr=None)
+        sr, original_audio = wav.read(cut_whistle_path)
 
         i = 0
         while i < (len(cut_whisle_file) - window_size + 1):
@@ -38,7 +38,7 @@ for file_name in os.listdir(cut_whistle_directory):
                 i += hop_lenght
         
         for index, i in enumerate(whistle_sounds_indices):
-            sf.write(('./dataset_generator/sounds/whistles/whistle_sound%03d.wav' %global_whistle_index), cut_whisle_file[i], sr, format='WAV', subtype='PCM_32')
+            wav.write(('./dataset_generator/sounds/whistles/whistle%03d.wav' %global_whistle_index), sr, original_audio[i])
             global_whistle_index += 1
 
 

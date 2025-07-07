@@ -39,7 +39,8 @@ TaskHandle_t i2sTaskHandle = NULL;
 void i2s_mic_task(void *parameter) {
     esp_err_t A0_err;
     esp_err_t A1_err;
-    size_t bytes_read;
+    size_t A0_bytes_read;
+    size_t A1_bytes_read;
 
     // Buffer to hold raw 32-bit samples from I2S
     int32_t* A0_i2s_read_buffer = (int32_t*)malloc(I2S_READ_BUFFER_SIZE_BYTES);
@@ -78,37 +79,41 @@ void i2s_mic_task(void *parameter) {
 
     while (true) {
         // Read data from I2S bus
-        A0_err = i2s_read(A0_I2S_MIC_PORT, A0_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &bytes_read, portMAX_DELAY);
-        A1_err = i2s_read(A1_I2S_MIC_PORT, A1_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &bytes_read, portMAX_DELAY);
+        A0_err = i2s_read(A0_I2S_MIC_PORT, A0_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &A0_bytes_read, portMAX_DELAY); // Expecting bytes_read to be 2048 as well
+        A1_err = i2s_read(A1_I2S_MIC_PORT, A1_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &A1_bytes_read, portMAX_DELAY); // Expecting bytes_read to be 2048 as well
 
-        if (A0_err != ESP_OK) {
-            Serial.printf("I2S read error: %d\n", A0_err);
+        if ((A0_err != ESP_OK) || (A1_err != ESP_OK)) {
+            if (A0_err != ESP_OK) {Serial.printf("I2S A0 read error: %d\n", A0_err);}
+            if (A1_err != ESP_OK) {Serial.printf("I2S A1 read error: %d\n", A1_err);}
             continue;
         }
 
-        if (bytes_read > 0) {
-            int samples_read = bytes_read / sizeof(int32_t);
+        if ((A0_bytes_read > 0) && (A1_bytes_read > 0)) {
+            int A0_samples_read = A0_bytes_read / sizeof(int32_t); // Sample read is in frames, not bytes
+            int A1_samples_read = A1_bytes_read / sizeof(int32_t); // Sample read is in frames, not bytes
 
-            // Process 32-bit samples to 16-bit samples
-            // INMP441 data is 24-bit left-justified in a 32-bit frame.
-            // To get the 16 MSB, we right-shift by 8.
-            for (int i = 0; i < samples_read; i++) {
-                // *** NEW: Apply digital volume reduction ***
-                // First, apply the volume factor to the full 32-bit sample
-                int32_t A0_attenuated_sample = (int32_t)((float)A0_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
-                int32_t A1_attenuated_sample = (int32_t)((float)A1_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
+            if (A0_samples_read == A1_samples_read) {
+                // Process 32-bit samples to 16-bit samples
+                // INMP441 data is 24-bit left-justified in a 32-bit frame.
+                // To get the 16 MSB, we right-shift by 8.
+                for (int i = 0; i < A0_samples_read; i++) {
+                    // *** NEW: Apply digital volume reduction ***
+                    // First, apply the volume factor to the full 32-bit sample
+                    int32_t A0_attenuated_sample = (int32_t)((float)A0_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
+                    int32_t A1_attenuated_sample = (int32_t)((float)A1_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
 
-                // Then, convert the attenuated 32-bit sample to 16-bit
-                A0_serial_write_buffer[i] = (int16_t)(A0_attenuated_sample >> 8);
-                A1_serial_write_buffer[i] = (int16_t)(A1_attenuated_sample >> 8);
+                    // Then, convert the attenuated 32-bit sample to 16-bit
+                    A0_serial_write_buffer[i] = (int16_t)(A0_attenuated_sample >> 8);
+                    A1_serial_write_buffer[i] = (int16_t)(A1_attenuated_sample >> 8);
+                }
+    
+                // Write the 16-bit samples to Serial port
+                Serial.write(START_BYTE);
+                Serial.write((const uint8_t*)&order_count, 4);
+                Serial.write((const uint8_t*)A0_serial_write_buffer, A0_samples_read * sizeof(int16_t));
+                Serial.write((const uint8_t*)A1_serial_write_buffer, A1_samples_read * sizeof(int16_t));
+                Serial.write(END_BYTE);
             }
-
-            // Write the 16-bit samples to Serial port
-            Serial.write(START_BYTE);
-            Serial.write((const uint8_t*)&order_count, 4);
-            Serial.write((const uint8_t*)A0_serial_write_buffer, samples_read * sizeof(int16_t));
-            Serial.write((const uint8_t*)A1_serial_write_buffer, samples_read * sizeof(int16_t));
-            Serial.write(END_BYTE);
         }
 
         order_count++;
@@ -131,15 +136,14 @@ void setup() {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX), // Master, RX
         .sample_rate = SAMPLE_RATE,
         .bits_per_sample = BITS_PER_SAMPLE_CONFIG,
-        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT, // INMP441 is mono. Assuming L/R pin is set for Left channel.
-                                                     // Connect L/R pin of INMP441 to GND for Left Channel.
+        .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // Each microphone is assigned to a single I2S port
         .communication_format = I2S_COMM_FORMAT_STAND_I2S,
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
         .dma_buf_count = 4,                      // Number of DMA buffers
         .dma_buf_len = 1024,                     // Length of each DMA buffer in samples
         .use_apll = true,
         .fixed_mclk = 0
-    };
+    };  
 
     // Configure I2S pins
     i2s_pin_config_t A0_pin_config = {
@@ -154,8 +158,7 @@ void setup() {
         .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_RX), // Master, RX
         .sample_rate = SAMPLE_RATE,
         .bits_per_sample = BITS_PER_SAMPLE_CONFIG,
-        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT, // INMP441 is mono. Assuming L/R pin is set for Left channel.
-                                                     // Connect L/R pin of INMP441 to GND for Left Channel.
+        .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // Each microphone is assigned to a single I2S port
         .communication_format = I2S_COMM_FORMAT_STAND_I2S,
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
         .dma_buf_count = 4,                      // Number of DMA buffers

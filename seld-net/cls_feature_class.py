@@ -46,8 +46,10 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/0.120m_8channel_3class_mic_signals'
         elif dataset == 'ansim_clone':
             self._base_folder = './dataset_generator/sounds/ANSIM_clone'
-        elif dataset == 'ansim_clone_matlab':
-            self._base_folder = './dataset_generator/ANSIM_clone_matlab/dataset_generator/sounds/ANSIM_clone'
+        elif dataset == 'ansim_clone_0.120m':
+            self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m'
+        elif dataset == 'ansim_clone_0.120m_whistle':
+            self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -71,6 +73,8 @@ class FeatureClass:
 
         # If circular-array 8 channels else 4 for Ambisonic
         if ('drone' in self._dataset):
+            self._nb_channels = 8
+        elif ('ansim_clone_0.120m' in self._dataset):
             self._nb_channels = 8
         elif ('ansim_clone' in self._dataset):
             self._nb_channels = 4
@@ -110,6 +114,22 @@ class FeatureClass:
                     'whistle_sound': 0,
                     'siren_sound': 1,
                     'scream_sound': 2,
+                }
+        elif 'ansim_clone_0.120m_whistle' in self._dataset:
+            self._unique_classes = \
+                {
+                    'clearthroat': 2,
+                    'cough': 8,
+                    'doorslam': 9,
+                    'drawer': 1,
+                    'keyboard': 6,
+                    'keysDrop': 4,
+                    'knock': 0,
+                    'laughter': 10,
+                    'pageturn': 7,
+                    'phone': 3,
+                    'speech': 5,
+                    'whistle': 11
                 }
         else:
             # DCASE 2016 Task 2 sound events
@@ -203,8 +223,6 @@ class FeatureClass:
             split_line = line.strip().split(',')
             if 'real' in self._dataset:
                 desc_file['class'].append(split_line[0].split('.')[0].split('-')[1])
-            if '3class' in self._dataset:
-                desc_file['class'].append(split_line[0].split('.')[0])
             else:
                 desc_file['class'].append(split_line[0].split('.')[0][:-3])
             desc_file['start'].append(int(np.floor(float(split_line[1])*self._frame_res)))

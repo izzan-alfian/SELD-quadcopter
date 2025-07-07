@@ -39,7 +39,8 @@ TaskHandle_t i2sTaskHandle = NULL;
 void i2s_mic_task(void *parameter) {
     esp_err_t B0_err;
     esp_err_t B1_err;
-    size_t bytes_read;
+    size_t B0_bytes_read;
+    size_t B1_bytes_read;
 
     // Buffer to hold raw 32-bit samples from I2S
     int32_t* B0_i2s_read_buffer = (int32_t*)malloc(I2S_READ_BUFFER_SIZE_BYTES);
@@ -57,7 +58,6 @@ void i2s_mic_task(void *parameter) {
     }
 
     // Buffer to hold 16-bit samples for serial transmission
-    // Number of samples = I2S_READ_BUFFER_SIZE_BYTES / sizeof(int32_t)
     int num_samples = I2S_READ_BUFFER_SIZE_BYTES / sizeof(int32_t);
     int16_t* B0_serial_write_buffer = (int16_t*)malloc(num_samples * sizeof(int16_t));
     int16_t* B1_serial_write_buffer = (int16_t*)malloc(num_samples * sizeof(int16_t));
@@ -79,37 +79,41 @@ void i2s_mic_task(void *parameter) {
 
     while (true) {
         // Read data from I2S bus
-        B0_err = i2s_read(B0_I2S_MIC_PORT, B0_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &bytes_read, portMAX_DELAY);
-        B1_err = i2s_read(B1_I2S_MIC_PORT, B1_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &bytes_read, portMAX_DELAY);
+        B0_err = i2s_read(B0_I2S_MIC_PORT, B0_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &B0_bytes_read, portMAX_DELAY);
+        B1_err = i2s_read(B1_I2S_MIC_PORT, B1_i2s_read_buffer, I2S_READ_BUFFER_SIZE_BYTES, &B1_bytes_read, portMAX_DELAY);
 
-        if (B0_err != ESP_OK) {
-            Serial.printf("I2S read error: %d\n", B0_err);
+        if ((B0_err != ESP_OK) || (B1_err != ESP_OK)) {
+            if (B0_err != ESP_OK) {Serial.printf("I2S B0 read error: %d\n", B0_err);}
+            if (B1_err != ESP_OK) {Serial.printf("I2S B1 read error: %d\n", B1_err);}
             continue;
         }
 
-        if (bytes_read > 0) {
-            int samples_read = bytes_read / sizeof(int32_t);
+        if ((B0_bytes_read > 0) || (B1_bytes_read > 0)) {
+            int B0_samples_read = B0_bytes_read / sizeof(int32_t);
+            int B1_samples_read = B0_bytes_read / sizeof(int32_t);
 
-            // Process 32-bit samples to 16-bit samples
-            // INMP441 data is 24-bit left-justified in a 32-bit frame.
-            // To get the 16 MSB, we right-shift by 8.
-            for (int i = 0; i < samples_read; i++) {
-                // *** NEW: Apply digital volume reduction ***
-                // First, apply the volume factor to the full 32-bit sample
-                int32_t B0_attenuated_sample = (int32_t)((float)B0_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
-                int32_t B1_attenuated_sample = (int32_t)((float)B1_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
+            if (B0_samples_read == B1_samples_read) {
+                // Process 32-bit samples to 16-bit samples
+                // INMP441 data is 24-bit left-justified in a 32-bit frame.
+                // To get the 16 MSB, we right-shift by 8.
+                for (int i = 0; i < B0_samples_read; i++) {
+                    // *** NEW: Apply digital volume reduction ***
+                    // First, apply the volume factor to the full 32-bit sample
+                    int32_t B0_attenuated_sample = (int32_t)((float)B0_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
+                    int32_t B1_attenuated_sample = (int32_t)((float)B1_i2s_read_buffer[i] * VOLUME_REDUCTION_FACTOR);
 
-                // Then, convert the attenuated 32-bit sample to 16-bit
-                B0_serial_write_buffer[i] = (int16_t)(B0_attenuated_sample >> 8);
-                B1_serial_write_buffer[i] = (int16_t)(B1_attenuated_sample >> 8);
+                    // Then, convert the attenuated 32-bit sample to 16-bit
+                    B0_serial_write_buffer[i] = (int16_t)(B0_attenuated_sample >> 8);
+                    B1_serial_write_buffer[i] = (int16_t)(B1_attenuated_sample >> 8);
+                }
+
+                // Write the 16-bit samples to Serial port
+                Serial.write(START_BYTE);
+                Serial.write((const uint8_t*)&order_count, 4);
+                Serial.write((const uint8_t*)B0_serial_write_buffer, B0_samples_read * sizeof(int16_t));
+                Serial.write((const uint8_t*)B1_serial_write_buffer, B0_samples_read * sizeof(int16_t));
+                Serial.write(END_BYTE);
             }
-
-            // Write the 16-bit samples to Serial port
-            Serial.write(START_BYTE);
-            Serial.write((const uint8_t*)&order_count, 4);
-            Serial.write((const uint8_t*)B0_serial_write_buffer, samples_read * sizeof(int16_t));
-            Serial.write((const uint8_t*)B1_serial_write_buffer, samples_read * sizeof(int16_t));
-            Serial.write(END_BYTE);
         }
 
         order_count++;
@@ -132,7 +136,7 @@ void setup() {
         .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_RX), // Slave, RX
         .sample_rate = SAMPLE_RATE,
         .bits_per_sample = BITS_PER_SAMPLE_CONFIG,
-        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT, // INMP441 is mono. Assuming L/R pin is set for Left channel.
+        .channel_format = I2S_CHANNEL_FMT_ALL_LEFT, // INMP441 is mono. Assuming L/R pin is set for Left channel.
                                                      // Connect L/R pin of INMP441 to GND for Left Channel.
         .communication_format = I2S_COMM_FORMAT_STAND_I2S,
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
@@ -155,7 +159,7 @@ void setup() {
         .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_RX), // Slave, RX
         .sample_rate = SAMPLE_RATE,
         .bits_per_sample = BITS_PER_SAMPLE_CONFIG,
-        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT, // INMP441 is mono. Assuming L/R pin is set for Left channel.
+        .channel_format = I2S_CHANNEL_FMT_ALL_LEFT, // INMP441 is mono. Assuming L/R pin is set for Left channel.
                                                      // Connect L/R pin of INMP441 to GND for Left Channel.
         .communication_format = I2S_COMM_FORMAT_STAND_I2S,
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1

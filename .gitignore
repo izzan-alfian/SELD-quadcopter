@@ -1,3 +1,5 @@
 # Dataset location
 dataset_generator/whistle_extraction/resources/
 dataset_generator/sounds/
+.gitignore
+.vscode/

@@ -3,19 +3,14 @@ import pyroomacoustics as pra
 import matplotlib.pyplot as plt
 import soundfile as sf
 import pandas as pd
-import librosa
 import os
 import scipy.io.wavfile as wav
 from pathlib import Path
 
-# --- CONFIGURATION ---
-NB_TRAIN = 240
-NB_TEST = 60
-
 # --- Asset and Output Directories ---
 # Using Path for better cross-platform compatibility
-BASE_DIR = Path("./dataset_generator/sounds/ANSIM_clone")
-RAW_DIRECTORY = BASE_DIR / "dcase2016_task2_train_dev/dcase2016_task2_train"
+BASE_DIR = Path("./dataset_generator/sounds/ANSIM_clone_0.120m_whistle")
+RAW_DIRECTORY = BASE_DIR / "raws"
 WAV_DIRECTORY = BASE_DIR / "wav_ov1_split1_30db"
 DESC_DIRECTORY = BASE_DIR / "desc_ov1_split1"
 TEMP_DIRECTORY = BASE_DIR / "temp"
@@ -24,14 +19,18 @@ TEMP_DIRECTORY = BASE_DIR / "temp"
 # --- Simulation Parameters ---
 SECONDS_LENGTH = 30
 SR = 44100
-MAX_POSSIBLE_WHISTLE_RADIUS = 100
-MIN_POSSIBLE_WHISTLE_RADIUS = 50
-SOUND_EVENT_GAP = 1.5
-SOUND_EVENT_GAP_TOLERANT = 0.2
 
-# Microphone array geometry (4 microphones)
-MIC_POSITIONS = pra.circular_2D_array(center=[0,0], M=4, phi0=0, radius=37.5e-3)
-MIC_POSITIONS = np.concatenate((MIC_POSITIONS, [[0, 0, 0 ,0]]), axis=0)
+MIC_POSITIONS = np.array([
+    [  0.0420,    0.0615,   -0.0410],
+    [ -0.0420,    0.0615,    0.0410],
+    [ -0.0615,    0.0420,   -0.0410],
+    [ -0.0615,   -0.0420,    0.0410],
+    [ -0.0420,   -0.0615,   -0.0410],
+    [  0.0420,   -0.0615,    0.0410],
+    [  0.0615,   -0.0420,   -0.0410],
+    [  0.0615,    0.0420,    0.0410]
+]).T
+
 
 def sph2cart(az, el, r):
     rcos_theta = r * np.cos(el)
@@ -67,7 +66,7 @@ def generate_sound(csv_dict):
 
     room = pra.AnechoicRoom(fs=SR, sigma2_awgn=sigma2)
     room.add_microphone_array(MIC_POSITIONS)
-
+    
     for idx, sound_event in enumerate(csv_dict['class']):
         sound_filename = sound_event
         fs, sound = wav.read(RAW_DIRECTORY / sound_filename)

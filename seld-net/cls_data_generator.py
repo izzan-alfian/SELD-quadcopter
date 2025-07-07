@@ -82,6 +82,8 @@ class DataGenerator(object):
         for filename in os.listdir(self._label_dir):
             if self._datagen_mode in filename:
                 self._filenames_list.append(filename)
+            # self._filenames_list.sort()
+            # print(_filenames_list)
 
         temp_feat = np.load(os.path.join(self._feat_dir, self._filenames_list[0]))          # (5166, 4096)
         self._nb_frames_file = temp_feat.shape[0]
