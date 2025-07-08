@@ -52,6 +52,8 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle'
         elif dataset == 'ansim_clone_0.120m_whistle_drone':
             self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle_drone'
+        elif dataset == 'criset_0.120m_3class_motor':
+            self._base_folder = './dataset_generator/sounds/criset_0.120m_3class_motor'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -75,6 +77,8 @@ class FeatureClass:
 
         # If circular-array 8 channels else 4 for Ambisonic
         if ('drone' in self._dataset):
+            self._nb_channels = 8
+        elif ('criset' in self._dataset):
             self._nb_channels = 8
         elif ('ansim_clone_0.120m' in self._dataset):
             self._nb_channels = 8
@@ -100,17 +104,12 @@ class FeatureClass:
                     '8': 6,
                     '9': 7
                 }
-        elif '1class' in self._dataset:
-            self._unique_classes = \
-                {
-                    'whistle_sound': 0
-                }
         elif '3class' in self._dataset:
             self._unique_classes = \
                 {
-                    'whistle_sound': 0,
-                    'siren_sound': 1,
-                    'scream_sound': 2,
+                    'whistle': 0,
+                    'siren': 1,
+                    'speech': 2,
                 }
         elif 'ansim_clone_0.120m_whistle' in self._dataset:
             self._unique_classes = \
