@@ -9,7 +9,7 @@ from pathlib import Path
 
 # --- Asset and Output Directories ---
 # Using Path for better cross-platform compatibility
-BASE_DIR = Path("./dataset_generator/sounds/criset_0.120m_3class")
+BASE_DIR = Path("./dataset_generator/sounds/criset_0.120m_2class")
 RAW_DIRECTORY = BASE_DIR / "raws"
 WAV_DIRECTORY = BASE_DIR / "wav_ov1_split1_30db"
 DESC_DIRECTORY = BASE_DIR / "desc_ov1_split1"

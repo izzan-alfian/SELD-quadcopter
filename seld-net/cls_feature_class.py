@@ -52,8 +52,14 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle'
         elif dataset == 'ansim_clone_0.120m_whistle_drone':
             self._base_folder = './dataset_generator/sounds/ANSIM_clone_0.120m_whistle_drone'
+        elif dataset == 'criset_0.120m_3class':
+            self._base_folder = './dataset_generator/sounds/criset_0.120m_3class'
         elif dataset == 'criset_0.120m_3class_motor':
             self._base_folder = './dataset_generator/sounds/criset_0.120m_3class_motor'
+        elif dataset == 'criset_0.120m_2class':
+            self._base_folder = './dataset_generator/sounds/criset_0.120m_2class'
+        elif dataset == 'criset_0.120m_2class_motor':
+            self._base_folder = './dataset_generator/sounds/criset_0.120m_2class_motor'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -103,6 +109,12 @@ class FeatureClass:
                     '7': 5,
                     '8': 6,
                     '9': 7
+                }
+        elif '2class' in self._dataset:
+            self._unique_classes = \
+                {
+                    'whistle': 0,
+                    'siren': 1,
                 }
         elif '3class' in self._dataset:
             self._unique_classes = \

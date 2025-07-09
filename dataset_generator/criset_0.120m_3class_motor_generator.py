@@ -9,7 +9,8 @@ from pathlib import Path
 
 # --- Asset and Output Directories ---
 # Using Path for better cross-platform compatibility
-BASE_DIR = Path("./dataset_generator/sounds/criset_0.120m_3class")
+BASE_DIR = Path("./dataset_generator/sounds/criset_0.120m_3class_motor")
+MOTOR_NOISE_DIRECTORY = Path("./dataset_generator/sounds/augmented_drone_motor_noises")
 RAW_DIRECTORY = BASE_DIR / "raws"
 WAV_DIRECTORY = BASE_DIR / "wav_ov1_split1_30db"
 DESC_DIRECTORY = BASE_DIR / "desc_ov1_split1"
@@ -159,6 +160,8 @@ if __name__ == '__main__':
         sound_array = generate_sound(csv_dict)
         sound_array = add_noise(sound_array, NORMAL_SNR_DB)
         split, count = csv_name.split('_')[0:2]
+        motor_noise_name = split + '_' + count + '.wav'
+        sound_array = add_noise(sound_array, MOTOR_SNR_DB, noise_source=wav.read(MOTOR_NOISE_DIRECTORY / motor_noise_name)[1].T)
 
         temp_name = csv_name.split('.')[0] + ".npy"
         np.save(TEMP_DIRECTORY / temp_name, sound_array)

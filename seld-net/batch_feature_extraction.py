@@ -3,7 +3,8 @@
 
 import cls_feature_class
 
-dataset_name = 'criset_0.120m_3class_motor'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
+dataset_name = 'criset_0.120m_3class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
+# dataset_name = 'criset_0.120m_2class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 
 # Extracts feature and labels for all overlap and splits
 for ovo in [1, 2, 3]:  # SE overlap. Change to [1] if you are only calculating the features for overlap 1.

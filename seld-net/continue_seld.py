@@ -100,7 +100,7 @@ def main(argv):
 
     job_id = 1 if len(argv) < 2 else argv[1]
 
-    model_dir = 'models/'
+    model_dir = '/content/drive/MyDrive/models/'
     utils.create_folder(model_dir)
     unique_name = '{}_ov{}_split{}_{}{}_3d{}_{}'.format(
         params['dataset'], params['overlap'], params['split'], params['mode'], params['weakness'],
@@ -147,10 +147,14 @@ def main(argv):
         )
     )
 
-    model = keras_model.get_model(data_in=data_in, data_out=data_out, dropout_rate=params['dropout_rate'],
-                                  nb_cnn2d_filt=params['nb_cnn2d_filt'], pool_size=params['pool_size'],
-                                  rnn_size=params['rnn_size'], fnn_size=params['fnn_size'],
-                                  classification_mode=params['mode'], weights=params['loss_weights'])
+    model_path = '{}_model.keras'.format(unique_name)
+    if os.path.exists(model_path):
+        print('Loading pre-trained model from: {}'.format(model_path))
+        model = tf.keras.models.load_model(model_path)
+        model.summary()
+    else:
+        print("no model was found")
+        sys.exit()
     best_metric = 99999
     conf_mat = None
     best_conf_mat = None
@@ -238,4 +242,4 @@ if __name__ == "__main__":
     try:
         sys.exit(main(sys.argv))
     except (ValueError, IOError) as e:
-            sys.exit(e)
+        sys.exit(e)

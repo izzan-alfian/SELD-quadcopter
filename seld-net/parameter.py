@@ -190,6 +190,39 @@ def get_params(argv):
         params['azi_only'] = True
         params['db'] = 30
 
+    elif argv == '21':
+        params['dataset'] = 'criset_0.120m_3class'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['quick_test'] = False
+        params['azi_only'] = True
+        params['db'] = 30
+
+    elif argv == '22':
+        params['dataset'] = 'criset_0.120m_2class'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '23':
+        params['dataset'] = 'criset_0.120m_2class_motor'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '24':
+        params['dataset'] = 'criset_0.120m_2class_motor_filtered'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
     else:
         print('ERROR: unknown argument {}'.format(argv))
         exit()

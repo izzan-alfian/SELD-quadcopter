@@ -1,21 +1,20 @@
 from scipy.io import wavfile
 import noisereduce as nr
-import soundfile as sf
 from noisereduce.generate_noise import band_limited_noise
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-recording_sample_directory = './dataset_generator/sounds/8_channel_microphone_signals/wav/'
-result_directory = './dataset_generator/sounds/filtered_8_channel_microphone_signals/wav_ov1_split1_50db/'
+recording_sample_directory = './dataset_generator/sounds/criset_0.120m_3class_motor/wav_ov1_split1_30db/'
+result_directory = './dataset_generator/sounds/criset_0.120m_3class_motor/wav_ov1_split1_30db_filtered/'
 
 for i in os.listdir(recording_sample_directory):
     recording_sample_path = os.path.join(recording_sample_directory, i)
-    recording_sample, sr = sf.read(recording_sample_path)
+    sr, recording_sample = wavfile.read(recording_sample_path)
+    print(recording_sample_path)
 
     reduced_noise_recording_sample = np.zeros_like(recording_sample)
     for index, channel in enumerate(recording_sample.T):
-        print(index)
         reduced_noise_channel = nr.reduce_noise(
             y = channel,
             sr=sr,
@@ -31,4 +30,4 @@ for i in os.listdir(recording_sample_directory):
         reduced_noise_recording_sample[:, index] = reduced_noise_channel
 
     result_path = os.path.join(result_directory, i)
-    sf.write(result_path, reduced_noise_recording_sample, sr)
+    wavfile.write(result_path, sr, reduced_noise_recording_sample)
