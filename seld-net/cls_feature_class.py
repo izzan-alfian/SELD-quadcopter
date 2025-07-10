@@ -121,7 +121,7 @@ class FeatureClass:
                 {
                     'whistle': 0,
                     'siren': 1,
-                    'speech': 2,
+                    'scream': 2,
                 }
         elif 'ansim_clone_0.120m_whistle' in self._dataset:
             self._unique_classes = \

@@ -44,21 +44,21 @@ def plot_functions(fig_name, _tr_loss, _val_loss, _sed_loss, _doa_loss, _epoch_m
     current_epoch = epoch_idx + 1
 
     plot.subplot(311)
-    plot.plot(range(current_epoch), _tr_loss, label='train loss')
-    plot.plot(range(current_epoch), _val_loss, label='val loss')
+    plot.plot(range(current_epoch), _tr_loss[:current_epoch], label='train loss')
+    plot.plot(range(current_epoch), _val_loss[:current_epoch], label='val loss')
     plot.legend()
     plot.grid(True)
 
     plot.subplot(312)
-    plot.plot(range(current_epoch), _epoch_metric_loss, label='metric')
-    plot.plot(range(current_epoch), _sed_loss[:, 0], label='er')
-    plot.plot(range(current_epoch), _sed_loss[:, 1], label='f1')
+    plot.plot(range(current_epoch), _epoch_metric_loss[:current_epoch], label='metric')
+    plot.plot(range(current_epoch), _sed_loss[:current_epoch, 0], label='er')
+    plot.plot(range(current_epoch), _sed_loss[:current_epoch, 1], label='f1')
     plot.legend()
     plot.grid(True)
 
     plot.subplot(313)
-    plot.plot(range(current_epoch), _doa_loss[:, 1], label='gt_thres')
-    plot.plot(range(current_epoch), _doa_loss[:, 2], label='pred_thres')
+    plot.plot(range(current_epoch), _doa_loss[:current_epoch, 1], label='gt_thres')
+    plot.plot(range(current_epoch), _doa_loss[:current_epoch, 2], label='pred_thres')
     plot.legend()
     plot.grid(True)
 
@@ -86,19 +86,7 @@ def main(argv):
         print('Using default inputs for now')
         print('-------------------------------------------------------------------------------------------------------')
         print('\n\n')
-    # use parameter set defined by user
 
-    # Configure GPU memory growth
-    # gpus = tf.config.experimental.list_physical_devices('GPU')
-    # if gpus:
-    #     try:
-    #         # Set memory growth for each physical GPU
-    #         for gpu in gpus:
-    #             tf.config.experimental.set_memory_growth(gpu, True)
-    #         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-    #         print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs configured for memory growth.")
-    #     except RuntimeError as e:
-    #         print(f"Error setting memory growth: {e}")
     task_id = '1' if len(argv) < 3 else argv[-1]
     params = parameter.get_params(task_id)
 
@@ -160,19 +148,20 @@ def main(argv):
         print("no model was found")
         sys.exit()
 
+    evaluation = np.load('{}_eval.npz'.format(unique_name))
     
-    best_metric = 99999
+    best_metric = evaluation['best_metric']
     conf_mat = None
-    best_conf_mat = None
-    best_epoch = -1
+    best_conf_mat = evaluation['best_conf_mat']
+    best_epoch = evaluation['best_epoch']
     patience_cnt = 0
-    epoch_metric_loss = np.zeros(params['nb_epochs'])
-    tr_loss = np.zeros(params['nb_epochs'])
-    val_loss = np.zeros(params['nb_epochs'])
-    doa_loss = np.zeros((params['nb_epochs'], 6))
-    sed_loss = np.zeros((params['nb_epochs'], 2))
+    epoch_metric_loss = evaluation['epoch_metric_loss']
+    tr_loss = evaluation['tr_loss']
+    val_loss = evaluation['val_loss']
+    doa_loss = evaluation['doa_loss']
+    sed_loss = evaluation['sed_loss']
     nb_epoch = 2 if params['quick_test'] else params['nb_epochs']
-    for epoch_cnt in range(nb_epoch):
+    for epoch_cnt in range(best_epoch+1, nb_epoch):
         start = time.time()
         hist = model.fit(
             data_gen_train.generate(),
@@ -217,6 +206,17 @@ def main(argv):
             best_epoch = epoch_cnt
             model.save('{}_model.keras'.format(unique_name))
             patience_cnt = 0
+            np.savez('{}_eval'.format(unique_name),
+                tr_loss=tr_loss,
+                val_loss=val_loss,
+                sed_loss=sed_loss,
+                doa_loss=doa_loss,
+                epoch_metric_loss=epoch_metric_loss,
+                epoch_cnt=epoch_cnt,
+                best_metric=best_metric,
+                best_epoch=best_epoch,
+                best_conf_mat = best_conf_mat
+            )
 
         print(
             'epoch_cnt: %d, time: %.2fs, tr_loss: %.2f, val_loss: %.2f, '

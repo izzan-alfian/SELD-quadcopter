@@ -44,21 +44,21 @@ def plot_functions(fig_name, _tr_loss, _val_loss, _sed_loss, _doa_loss, _epoch_m
     current_epoch = epoch_idx + 1
 
     plot.subplot(311)
-    plot.plot(range(current_epoch), _tr_loss, label='train loss')
-    plot.plot(range(current_epoch), _val_loss, label='val loss')
+    plot.plot(range(current_epoch), _tr_loss[:current_epoch], label='train loss')
+    plot.plot(range(current_epoch), _val_loss[:current_epoch], label='val loss')
     plot.legend()
     plot.grid(True)
 
     plot.subplot(312)
-    plot.plot(range(current_epoch), _epoch_metric_loss, label='metric')
-    plot.plot(range(current_epoch), _sed_loss[:, 0], label='er')
-    plot.plot(range(current_epoch), _sed_loss[:, 1], label='f1')
+    plot.plot(range(current_epoch), _epoch_metric_loss[:current_epoch], label='metric')
+    plot.plot(range(current_epoch), _sed_loss[:current_epoch, 0], label='er')
+    plot.plot(range(current_epoch), _sed_loss[:current_epoch, 1], label='f1')
     plot.legend()
     plot.grid(True)
 
     plot.subplot(313)
-    plot.plot(range(current_epoch), _doa_loss[:, 1], label='gt_thres')
-    plot.plot(range(current_epoch), _doa_loss[:, 2], label='pred_thres')
+    plot.plot(range(current_epoch), _doa_loss[:current_epoch, 1], label='gt_thres')
+    plot.plot(range(current_epoch), _doa_loss[:current_epoch, 2], label='pred_thres')
     plot.legend()
     plot.grid(True)
 
@@ -199,6 +199,17 @@ def main(argv):
             best_epoch = epoch_cnt
             model.save('{}_model.keras'.format(unique_name))
             patience_cnt = 0
+            np.savez('{}_eval'.format(unique_name),
+                tr_loss=tr_loss,
+                val_loss=val_loss,
+                sed_loss=sed_loss,
+                doa_loss=doa_loss,
+                epoch_metric_loss=epoch_metric_loss,
+                epoch_cnt=epoch_cnt,
+                best_metric=best_metric,
+                best_epoch=best_epoch,
+                best_conf_mat = best_conf_mat
+            )
 
         print(
             'epoch_cnt: %d, time: %.2fs, tr_loss: %.2f, val_loss: %.2f, '
