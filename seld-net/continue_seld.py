@@ -100,7 +100,7 @@ def main(argv):
 
     job_id = 1 if len(argv) < 2 else argv[1]
 
-    model_dir = '/content/drive/MyDrive/models/'
+    model_dir = 'models/'
     utils.create_folder(model_dir)
     unique_name = '{}_ov{}_split{}_{}{}_3d{}_{}'.format(
         params['dataset'], params['overlap'], params['split'], params['mode'], params['weakness'],
@@ -155,6 +155,8 @@ def main(argv):
     else:
         print("no model was found")
         sys.exit()
+
+    
     best_metric = 99999
     conf_mat = None
     best_conf_mat = None

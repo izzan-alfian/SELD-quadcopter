@@ -4,11 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Python Debugger: Current File",
+            "name": "Python Debugger: SELDnet on filtered 8 channel sound array recorded on a drone",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
+            "args": ["57_50LossWeights", "22"], // (<job-id>, <task-id>)
             "console": "integratedTerminal"
         }
     ]
