@@ -36,25 +36,29 @@ def collect_test_labels(_data_gen_test, _data_out, classification_mode, quick_te
     return gt_sed.astype(int), gt_doa
 
 
-def plot_functions(fig_name, _tr_loss, _val_loss, _sed_loss, _doa_loss, _epoch_metric_loss):
+def plot_functions(fig_name, _tr_loss, _val_loss, _sed_loss, _doa_loss, _epoch_metric_loss, epoch_idx):
+    
     plot.figure()
-    nb_epoch = len(_tr_loss)
+    plot.suptitle(('epoch index: ' + str(epoch_idx)), fontsize=16)
+    
+    current_epoch = epoch_idx + 1
+
     plot.subplot(311)
-    plot.plot(range(nb_epoch), _tr_loss, label='train loss')
-    plot.plot(range(nb_epoch), _val_loss, label='val loss')
+    plot.plot(range(current_epoch), _tr_loss, label='train loss')
+    plot.plot(range(current_epoch), _val_loss, label='val loss')
     plot.legend()
     plot.grid(True)
 
     plot.subplot(312)
-    plot.plot(range(nb_epoch), _epoch_metric_loss, label='metric')
-    plot.plot(range(nb_epoch), _sed_loss[:, 0], label='er')
-    plot.plot(range(nb_epoch), _sed_loss[:, 1], label='f1')
+    plot.plot(range(current_epoch), _epoch_metric_loss, label='metric')
+    plot.plot(range(current_epoch), _sed_loss[:, 0], label='er')
+    plot.plot(range(current_epoch), _sed_loss[:, 1], label='f1')
     plot.legend()
     plot.grid(True)
 
     plot.subplot(313)
-    plot.plot(range(nb_epoch), _doa_loss[:, 1], label='gt_thres')
-    plot.plot(range(nb_epoch), _doa_loss[:, 2], label='pred_thres')
+    plot.plot(range(current_epoch), _doa_loss[:, 1], label='gt_thres')
+    plot.plot(range(current_epoch), _doa_loss[:, 2], label='pred_thres')
     plot.legend()
     plot.grid(True)
 
@@ -204,7 +208,7 @@ def main(argv):
                 2*np.arcsin(doa_loss[epoch_cnt, 1]/2.0)/np.pi,
                 1 - (doa_loss[epoch_cnt, 5] / float(doa_gt.shape[0]))]
             )
-        plot_functions(unique_name + '.png', tr_loss, val_loss, sed_loss, doa_loss, epoch_metric_loss)
+        plot_functions(unique_name + '.png', tr_loss, val_loss, sed_loss, doa_loss, epoch_metric_loss, epoch_cnt)
 
         patience_cnt += 1
         if epoch_metric_loss[epoch_cnt] < best_metric:
