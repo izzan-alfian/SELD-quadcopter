@@ -7,3 +7,13 @@ https://github.com/deeplyinc/Nonverbal-Vocalization-Dataset/tree/main/dataset/sc
 https://www.kaggle.com/datasets/vishnu0399/emergency-vehicle-siren-sounds
 
 https://www.kaggle.com/datasets/murtadhanajim/gender-recognition-by-voiceoriginal
+
+https://www.kaggle.com/datasets/emrahaydemr/gunshot-audio-dataset
+
+https://github.com/karolpiczak/ESC-50
+
+
+whistle v
+siren v
+gunshot v
+glass v
