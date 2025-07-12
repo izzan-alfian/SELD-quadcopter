@@ -53,12 +53,14 @@ def plot_functions(fig_name, _tr_loss, _val_loss, _sed_loss, _doa_loss, _epoch_m
     plot.plot(range(current_epoch), _epoch_metric_loss[:current_epoch], label='metric')
     plot.plot(range(current_epoch), _sed_loss[:current_epoch, 0], label='er')
     plot.plot(range(current_epoch), _sed_loss[:current_epoch, 1], label='f1')
+    plot.ylim(0.0, 1.0,)
     plot.legend()
     plot.grid(True)
 
     plot.subplot(313)
     plot.plot(range(current_epoch), _doa_loss[:current_epoch, 1], label='gt_thres')
     plot.plot(range(current_epoch), _doa_loss[:current_epoch, 2], label='pred_thres')
+    plot.ylim(0.0, 1.0)
     plot.legend()
     plot.grid(True)
 
@@ -151,17 +153,26 @@ def main(argv):
     evaluation = np.load('{}_eval.npz'.format(unique_name))
     
     best_metric = evaluation['best_metric']
-    conf_mat = None
     best_conf_mat = evaluation['best_conf_mat']
-    best_epoch = evaluation['best_epoch']
+    best_epoch = int(evaluation['best_epoch'])
     patience_cnt = 0
     epoch_metric_loss = evaluation['epoch_metric_loss']
     tr_loss = evaluation['tr_loss']
     val_loss = evaluation['val_loss']
     doa_loss = evaluation['doa_loss']
     sed_loss = evaluation['sed_loss']
-    nb_epoch = 2 if params['quick_test'] else params['nb_epochs']
-    for epoch_cnt in range(best_epoch+1, nb_epoch):
+
+    total_nb_epochs = 2 if params['quick_test'] else params['nb_epochs']
+
+    if best_epoch >= total_nb_epochs - 1:
+        print("Training has already reached the maximum number of epochs.")
+        sys.exit(100)  # Special exit code for completion
+
+    epochs_per_session = 8
+    end_epoch_for_this_run = min(total_nb_epochs, best_epoch + 1 + epochs_per_session)
+    conf_mat = None
+
+    for epoch_cnt in range(best_epoch + 1, end_epoch_for_this_run):
         start = time.time()
         hist = model.fit(
             data_gen_train.generate(),

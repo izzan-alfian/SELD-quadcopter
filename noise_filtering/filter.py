@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-recording_sample_directory = './dataset_generator/sounds/criset_0.120m_3class_motor/wav_ov1_split1_30db/'
-result_directory = './dataset_generator/sounds/criset_0.120m_3class_motor/wav_ov1_split1_30db_filtered/'
+recording_sample_directory = './dataset_generator/sounds/criset_0.120m_2class_motor/wav_ov1_split1_30db/'
+result_directory = './dataset_generator/sounds/criset_0.120m_2class_motor/wav_ov1_split1_30db_filtered/'
 
 for i in os.listdir(recording_sample_directory):
     recording_sample_path = os.path.join(recording_sample_directory, i)

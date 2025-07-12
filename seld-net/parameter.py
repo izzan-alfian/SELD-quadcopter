@@ -178,7 +178,6 @@ def get_params(argv):
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
         params['quick_test'] = False
-        params['azi_only'] = True
         params['db'] = 30
 
     elif argv == '20':
@@ -187,7 +186,6 @@ def get_params(argv):
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
         params['quick_test'] = False
-        params['azi_only'] = True
         params['db'] = 30
 
     elif argv == '21':
@@ -196,7 +194,6 @@ def get_params(argv):
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
         params['quick_test'] = False
-        params['azi_only'] = True
         params['db'] = 30
 
     elif argv == '22':

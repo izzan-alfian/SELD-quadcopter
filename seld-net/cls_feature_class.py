@@ -60,6 +60,8 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/criset_0.120m_2class'
         elif dataset == 'criset_0.120m_2class_motor':
             self._base_folder = './dataset_generator/sounds/criset_0.120m_2class_motor'
+        elif dataset == 'criset_0.120m_2class_motor_filtered':
+            self._base_folder = './dataset_generator/sounds/criset_0.120m_2class_motor_filtered'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))

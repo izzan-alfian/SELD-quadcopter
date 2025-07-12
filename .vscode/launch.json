@@ -10,7 +10,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
-            "args": ["57_50LossWeights", "22"], // (<job-id>, <task-id>)
+            "args": ["59_50LossWeights", "22"], // (<job-id>, <task-id>)
             "console": "integratedTerminal"
         }
     ]

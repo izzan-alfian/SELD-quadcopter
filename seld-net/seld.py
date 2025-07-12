@@ -53,12 +53,14 @@ def plot_functions(fig_name, _tr_loss, _val_loss, _sed_loss, _doa_loss, _epoch_m
     plot.plot(range(current_epoch), _epoch_metric_loss[:current_epoch], label='metric')
     plot.plot(range(current_epoch), _sed_loss[:current_epoch, 0], label='er')
     plot.plot(range(current_epoch), _sed_loss[:current_epoch, 1], label='f1')
+    plot.ylim(0.0, 1.0,)
     plot.legend()
     plot.grid(True)
 
     plot.subplot(313)
     plot.plot(range(current_epoch), _doa_loss[:current_epoch, 1], label='gt_thres')
     plot.plot(range(current_epoch), _doa_loss[:current_epoch, 2], label='pred_thres')
+    plot.ylim(0.0, 1.0)
     plot.legend()
     plot.grid(True)
 
