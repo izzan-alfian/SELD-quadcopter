@@ -220,6 +220,62 @@ def get_params(argv):
         params['azi_only'] = False
         params['db'] = 30
 
+    elif argv == '25':
+        params['dataset'] = 'criset_4class'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '26':
+        params['dataset'] = 'criset_4class_motor'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '27':
+        params['dataset'] = 'criset_4class_motor_filtered'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '28':
+        params['dataset'] = 'criset_4class_20examples_1to10m'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '29':
+        params['dataset'] = 'criset_4class_20examples_1to10m_motor'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '30':
+        params['dataset'] = 'criset_4class_20examples_1to10m_motor_filtered'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '31':
+        params['dataset'] = 'criset_4class_5examples_1to10m'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
     else:
         print('ERROR: unknown argument {}'.format(argv))
         exit()

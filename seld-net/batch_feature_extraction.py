@@ -2,8 +2,11 @@
 # of the downloaded datasets before in the cls_feature_class.py
 
 import cls_feature_class
+import os
 
-dataset_name = 'criset_4class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
+num_processes = os.cpu_count()
+
+dataset_name = 'criset_4class_5examples_1to10m'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 # dataset_name = 'criset_0.120m_2class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 
 # Extracts feature and labels for all overlap and splits
@@ -13,7 +16,7 @@ for ovo in [1, 2, 3]:  # SE overlap. Change to [1] if you are only calculating t
             feat_cls = cls_feature_class.FeatureClass(ov=ovo, split=splito, nfft=nffto, dataset=dataset_name, db=30)
 
             # Extract features and normalize them
-            feat_cls.extract_all_feature()
+            feat_cls.extract_features_parallel(num_processes=num_processes)
             feat_cls.preprocess_features()
 
             # # Extract labels in regression mode

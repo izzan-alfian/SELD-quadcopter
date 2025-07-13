@@ -68,6 +68,14 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/criset_4class_motor'
         elif dataset == 'criset_4class_motor_filtered':
             self._base_folder = './dataset_generator/sounds/criset_4class_motor_filtered'
+        elif dataset == 'criset_4class_20examples_1to10m':
+            self._base_folder = './dataset_generator/sounds/criset_4class_20examples_1to10m'
+        elif dataset == 'criset_4class_20examples_1to10m_motor':
+            self._base_folder = './dataset_generator/sounds/criset_4class_20examples_1to10m_motor'
+        elif dataset == 'criset_4class_20examples_1to10m_motor_filtered':
+            self._base_folder = './dataset_generator/sounds/criset_4class_20examples_1to10m_motor_filtered'
+        elif dataset == 'criset_4class_5examples_1to10m':
+            self._base_folder = './dataset_generator/sounds/criset_4class_5examples_1to10m'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -437,9 +445,28 @@ class FeatureClass:
             self._aud_dir, self._desc_dir, self._feat_dir))
 
         for file_cnt, file_name in enumerate(os.listdir(self._desc_dir)):
-            print('file_cnt {}, file_name {}'.format(file_cnt, file_name))
-            wav_filename = '{}.wav'.format(file_name.split('.')[0])
-            self._extract_spectrogram_for_file(wav_filename)
+            self._process_feature_file(file_name, file_cnt)
+
+    def _process_feature_file(self, file_name, file_cnt):
+        print('file_cnt {}, file_name {}'.format(file_cnt, file_name))
+        wav_filename = '{}.wav'.format(file_name.split('.')[0])
+        self._extract_spectrogram_for_file(wav_filename)
+
+    def extract_features_parallel(self, extra='', num_processes=4):
+        # setting up folders
+        self._feat_dir = self.get_unnormalized_feat_dir(extra)
+        utils.create_folder(self._feat_dir)
+
+        # extraction starts
+        print('Extracting spectrogram in parallel:')
+        print('\t\taud_dir {}\n\t\tdesc_dir {}\n\t\tfeat_dir {}'.format(
+            self._aud_dir, self._desc_dir, self._feat_dir))
+
+        from multiprocessing import Pool
+        file_names = os.listdir(self._desc_dir)
+        with Pool(processes=num_processes) as pool:
+            pool.starmap(self._process_feature_file, [(file_name, file_cnt) for file_cnt, file_name in enumerate(file_names)])
+
 
     def preprocess_features(self, extra=''):
         # Setting up folders and filenames
