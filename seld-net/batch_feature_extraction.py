@@ -6,7 +6,7 @@ import os
 
 num_processes = os.cpu_count()
 
-dataset_name = 'criset_4class_5examples_1to10m'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
+dataset_name = 'criset_2class_motor_filtered'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 # dataset_name = 'criset_0.120m_2class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 
 # Extracts feature and labels for all overlap and splits

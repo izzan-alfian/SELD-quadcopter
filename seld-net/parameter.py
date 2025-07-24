@@ -197,7 +197,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '22':
-        params['dataset'] = 'criset_0.120m_2class'
+        params['dataset'] = 'criset_2class'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -205,7 +205,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '23':
-        params['dataset'] = 'criset_0.120m_2class_motor'
+        params['dataset'] = 'criset_2class_motor'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -213,7 +213,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '24':
-        params['dataset'] = 'criset_0.120m_2class_motor_filtered'
+        params['dataset'] = 'criset_2class_motor_filtered'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -221,7 +221,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '25':
-        params['dataset'] = 'criset_4class'
+        params['dataset'] = 'criset_2class_motor_schc'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -229,7 +229,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '26':
-        params['dataset'] = 'criset_4class_motor'
+        params['dataset'] = 'criset_2class_motor_filtered_schc'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -237,7 +237,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '27':
-        params['dataset'] = 'criset_4class_motor_filtered'
+        params['dataset'] = 'criset_4class'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -245,7 +245,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '28':
-        params['dataset'] = 'criset_4class_20examples_1to10m'
+        params['dataset'] = 'criset_4class_motor'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -253,7 +253,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '29':
-        params['dataset'] = 'criset_4class_20examples_1to10m_motor'
+        params['dataset'] = 'criset_4class_motor_filtered'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -261,7 +261,7 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '30':
-        params['dataset'] = 'criset_4class_20examples_1to10m_motor_filtered'
+        params['dataset'] = 'criset_4class_20examples_1to10m'
         params['batch_size'] = 2
         params['sequence_length'] = 512
         params['loss_weights'] = [1., 50.]
@@ -269,6 +269,22 @@ def get_params(argv):
         params['db'] = 30
 
     elif argv == '31':
+        params['dataset'] = 'criset_4class_20examples_1to10m_motor'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '32':
+        params['dataset'] = 'criset_4class_20examples_1to10m_motor_filtered'
+        params['batch_size'] = 2
+        params['sequence_length'] = 512
+        params['loss_weights'] = [1., 50.]
+        params['azi_only'] = False
+        params['db'] = 30
+
+    elif argv == '33':
         params['dataset'] = 'criset_4class_5examples_1to10m'
         params['batch_size'] = 2
         params['sequence_length'] = 512

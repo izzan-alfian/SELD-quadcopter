@@ -6,10 +6,12 @@ import pandas as pd
 import os
 import scipy.io.wavfile as wav
 from pathlib import Path
+import multiprocessing
+
 
 # --- Asset and Output Directories ---
 # Using Path for better cross-platform compatibility
-BASE_DIR = Path("./dataset_generator/sounds/criset_0.120m_2class")
+BASE_DIR = Path("./dataset_generator/sounds/criset_2class")
 RAW_DIRECTORY = BASE_DIR / "raws"
 WAV_DIRECTORY = BASE_DIR / "wav_ov1_split1_30db"
 DESC_DIRECTORY = BASE_DIR / "desc_ov1_split1"
@@ -149,18 +151,43 @@ def normalize_and_save_all_wavs():
 
     print("--- WAV file conversion complete. ---")
 
-
-if __name__ == '__main__':
-    all_csv = os.listdir(DESC_DIRECTORY)
-    for csv_name in all_csv:
-        print(f"Processing {csv_name}")
+def process_single_csv(csv_name):
+    """
+    This function contains all the steps to process one CSV file.
+    It will be executed by each process in the pool.
+    """
+    try:
+        print(f"Starting job for: {csv_name}")
         csv_dict = read_csv(csv_name)
-
         sound_array = generate_sound(csv_dict)
         sound_array = add_noise(sound_array, NORMAL_SNR_DB)
-        split, count = csv_name.split('_')[0:2]
-
-        temp_name = csv_name.split('.')[0] + ".npy"
+        
+        temp_name = Path(csv_name).stem + ".npy"
         np.save(TEMP_DIRECTORY / temp_name, sound_array)
+        return f"Successfully processed {csv_name}"
+    except Exception as e:
+        return f"ERROR processing {csv_name}: {e}"
+
+
+if __name__ == '__main__':
+    TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    WAV_DIRECTORY.mkdir(parents=True, exist_ok=True)
+
+    # --- Get list of tasks ---
+    all_csv = os.listdir(DESC_DIRECTORY)
+
+    num_processes = os.cpu_count()
+    print(f"--- Starting sound generation on {num_processes} cores... ---")
+
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        # pool.map applies the `process_single_csv` function to every item in `all_csv`
+        # It distributes the tasks among the worker processes.
+        # This is a blocking call; it will wait until all jobs are finished.
+        results = pool.map(process_single_csv, all_csv)
+
+    # Print the results/errors from each process
+    print("\n--- Generation Task Summary ---")
+    for res in results:
+        print(res)
 
     normalize_and_save_all_wavs()

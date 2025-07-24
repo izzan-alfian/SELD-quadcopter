@@ -56,12 +56,16 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/criset_0.120m_3class'
         elif dataset == 'criset_0.120m_3class_motor':
             self._base_folder = './dataset_generator/sounds/criset_0.120m_3class_motor'
-        elif dataset == 'criset_0.120m_2class':
-            self._base_folder = './dataset_generator/sounds/criset_0.120m_2class'
-        elif dataset == 'criset_0.120m_2class_motor':
-            self._base_folder = './dataset_generator/sounds/criset_0.120m_2class_motor'
-        elif dataset == 'criset_0.120m_2class_motor_filtered':
-            self._base_folder = './dataset_generator/sounds/criset_0.120m_2class_motor_filtered'
+        elif dataset == 'criset_2class':
+            self._base_folder = './dataset_generator/sounds/criset_2class'
+        elif dataset == 'criset_2class_motor':
+            self._base_folder = './dataset_generator/sounds/criset_2class_motor'
+        elif dataset == 'criset_2class_motor_filtered':
+            self._base_folder = './dataset_generator/sounds/criset_2class_motor_filtered'
+        elif dataset == 'criset_2class_motor_filtered_schc':
+            self._base_folder = './dataset_generator/sounds/criset_2class_motor_filtered_schc'
+        elif dataset == 'criset_2class_motor_schc':
+            self._base_folder = './dataset_generator/sounds/criset_2class_motor_schc'
         elif dataset == 'criset_4class':
             self._base_folder = './dataset_generator/sounds/criset_4class'
         elif dataset == 'criset_4class_motor':

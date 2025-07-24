@@ -173,7 +173,6 @@ if __name__ == '__main__':
     TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)
     WAV_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
-
     # --- Get list of tasks ---
     all_csv = os.listdir(DESC_DIRECTORY)
 

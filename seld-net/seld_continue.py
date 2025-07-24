@@ -168,7 +168,7 @@ def main(argv):
         print("Training has already reached the maximum number of epochs.")
         sys.exit(100)  # Special exit code for completion
 
-    epochs_per_session = 16
+    epochs_per_session = 24
     end_epoch_for_this_run = min(total_nb_epochs, best_epoch + 1 + epochs_per_session)
     conf_mat = None
 
