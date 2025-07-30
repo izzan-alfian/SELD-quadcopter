@@ -103,6 +103,9 @@ class DataGenerator(object):
         while 1:
             if self._shuffle:
                 random.shuffle(self._filenames_list)
+            
+            # temp unrandomizer
+            # self._filenames_list.sort()
 
             # Ideally this should have been outside the while loop. But while generating the test data we want the data
             # to be the same exactly for all epoch's hence we keep it here.

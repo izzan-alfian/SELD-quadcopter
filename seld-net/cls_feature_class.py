@@ -66,20 +66,18 @@ class FeatureClass:
             self._base_folder = './dataset_generator/sounds/criset_2class_motor_filtered_schc'
         elif dataset == 'criset_2class_motor_schc':
             self._base_folder = './dataset_generator/sounds/criset_2class_motor_schc'
-        elif dataset == 'criset_4class':
-            self._base_folder = './dataset_generator/sounds/criset_4class'
-        elif dataset == 'criset_4class_motor':
-            self._base_folder = './dataset_generator/sounds/criset_4class_motor'
-        elif dataset == 'criset_4class_motor_filtered':
-            self._base_folder = './dataset_generator/sounds/criset_4class_motor_filtered'
-        elif dataset == 'criset_4class_20examples_1to10m':
-            self._base_folder = './dataset_generator/sounds/criset_4class_20examples_1to10m'
-        elif dataset == 'criset_4class_20examples_1to10m_motor':
-            self._base_folder = './dataset_generator/sounds/criset_4class_20examples_1to10m_motor'
-        elif dataset == 'criset_4class_20examples_1to10m_motor_filtered':
-            self._base_folder = './dataset_generator/sounds/criset_4class_20examples_1to10m_motor_filtered'
-        elif dataset == 'criset_4class_5examples_1to10m':
-            self._base_folder = './dataset_generator/sounds/criset_4class_5examples_1to10m'
+        elif dataset == 'criset_test':
+            self._base_folder = './dataset_generator/sounds/criset_test'
+        elif dataset == 'criset_test_motor':
+            self._base_folder = './dataset_generator/sounds/criset_test_motor'
+        elif dataset == 'criset_test_motor_filtered':
+            self._base_folder = './dataset_generator/sounds/criset_test_motor_filtered'
+        elif dataset == 'cryset':
+            self._base_folder = './dataset_generator/sounds/cryset'
+        elif dataset == 'cryset_motor':
+            self._base_folder = './dataset_generator/sounds/cryset_motor'
+        elif dataset == 'cryset_motor_filtered':
+            self._base_folder = './dataset_generator/sounds/cryset_motor_filtered'
 
         # Input directories
         self._aud_dir = os.path.join(self._base_folder, 'wav_ov{}_split{}_{}db{}'.format(ov, split, db, wav_extra_name))
@@ -130,6 +128,11 @@ class FeatureClass:
                     '8': 6,
                     '9': 7
                 }
+        elif 'cryset' in self._dataset:
+            self._unique_classes = \
+                {
+                    'whistle': 0,
+                }    
         elif '2class' in self._dataset:
             self._unique_classes = \
                 {
@@ -142,15 +145,6 @@ class FeatureClass:
                     'whistle': 0,
                     'siren': 1,
                     'scream': 2,
-                }
-            
-        elif '4class' in self._dataset:
-            self._unique_classes = \
-                {
-                    'whistle': 0,
-                    'siren': 1,
-                    'gunshot': 2,
-                    'glassbreak': 3,
                 }
         elif 'ansim_clone_0.120m_whistle' in self._dataset:
             self._unique_classes = \
@@ -470,7 +464,6 @@ class FeatureClass:
         file_names = os.listdir(self._desc_dir)
         with Pool(processes=num_processes) as pool:
             pool.starmap(self._process_feature_file, [(file_name, file_cnt) for file_cnt, file_name in enumerate(file_names)])
-
 
     def preprocess_features(self, extra=''):
         # Setting up folders and filenames

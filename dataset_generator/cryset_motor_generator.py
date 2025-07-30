@@ -10,7 +10,8 @@ import multiprocessing
 
 # --- Asset and Output Directories ---
 # Using Path for better cross-platform compatibility
-BASE_DIR = Path("./dataset_generator/sounds/criset_4class_20examples_1to10m")
+BASE_DIR = Path("./dataset_generator/sounds/cryset_motor")
+MOTOR_NOISE_DIRECTORY = Path("./dataset_generator/sounds/augmented_drone_motor_noises")
 RAW_DIRECTORY = BASE_DIR / "raws"
 WAV_DIRECTORY = BASE_DIR / "wav_ov1_split1_30db"
 DESC_DIRECTORY = BASE_DIR / "desc_ov1_split1"
@@ -24,14 +25,14 @@ NORMAL_SNR_DB = 30
 MOTOR_SNR_DB = -5
 
 MIC_POSITIONS = np.array([
-    [  0.0420,    0.0615,   -0.0410],
-    [ -0.0420,    0.0615,    0.0410],
-    [ -0.0615,    0.0420,   -0.0410],
-    [ -0.0615,   -0.0420,    0.0410],
-    [ -0.0420,   -0.0615,   -0.0410],
-    [  0.0420,   -0.0615,    0.0410],
-    [  0.0615,   -0.0420,   -0.0410],
-    [  0.0615,    0.0420,    0.0410]
+    [ 0.01715,   0.01715,   0.01715],
+    [-0.01715,   0.01715,   0.01715],
+    [ 0.01715,  -0.01715,   0.01715],
+    [ 0.01715,   0.01715,  -0.01715],
+    [-0.01715,  -0.01715,   0.01715],
+    [ 0.01715,  -0.01715,  -0.01715],
+    [-0.01715,   0.01715,  -0.01715],
+    [-0.01715,  -0.01715,  -0.01715]
 ]).T
 
 
@@ -162,12 +163,16 @@ def process_single_csv(csv_name):
         sound_array = generate_sound(csv_dict)
         sound_array = add_noise(sound_array, NORMAL_SNR_DB)
         
-        temp_name = Path(csv_name).stem + ".npy"
+        split, count = csv_name.split('_')[0:2]
+        motor_noise_name = split + '_' + count + '.wav'
+        sound_array = add_noise(sound_array, MOTOR_SNR_DB, noise_source=wav.read(MOTOR_NOISE_DIRECTORY / motor_noise_name)[1].T)
+
+        temp_name = csv_name.split('.')[0] + ".npy"
         np.save(TEMP_DIRECTORY / temp_name, sound_array)
+
         return f"Successfully processed {csv_name}"
     except Exception as e:
         return f"ERROR processing {csv_name}: {e}"
-
 
 if __name__ == '__main__':
     TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)

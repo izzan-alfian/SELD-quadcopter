@@ -6,7 +6,7 @@ import os
 
 num_processes = os.cpu_count()
 
-dataset_name = 'criset_2class_motor_filtered'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
+dataset_name = 'cryset_motor'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 # dataset_name = 'criset_0.120m_2class'  # Datasets: ansim, resim, cansim, cresim, real, mansim and mreal
 
 # Extracts feature and labels for all overlap and splits
@@ -15,9 +15,10 @@ for ovo in [1, 2, 3]:  # SE overlap. Change to [1] if you are only calculating t
         for nffto in [512]: # For now use 512 point FFT. Once you get the code running, you can play around with this.
             feat_cls = cls_feature_class.FeatureClass(ov=ovo, split=splito, nfft=nffto, dataset=dataset_name, db=30)
 
+            # # Extract labels in regression mode
+            feat_cls.extract_all_labels('regr', 0)
+            
             # Extract features and normalize them
             feat_cls.extract_features_parallel(num_processes=num_processes)
             feat_cls.preprocess_features()
 
-            # # Extract labels in regression mode
-            feat_cls.extract_all_labels('regr', 0)

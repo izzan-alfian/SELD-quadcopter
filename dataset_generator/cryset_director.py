@@ -3,14 +3,14 @@ import pyroomacoustics as pra
 import matplotlib.pyplot as plt
 import soundfile as sf
 import pandas as pd
+import librosa
 import os
 import scipy.io.wavfile as wav
 from pathlib import Path
-import sys
 
 # --- Asset and Output Directories ---
 # Using Path for better cross-platform compatibility
-BASE_DIR = Path("./dataset_generator/sounds/criset_4class_20examples_1to10")
+BASE_DIR = Path("./dataset_generator/sounds/cryset")
 RAW_DIRECTORY = BASE_DIR / "raws"
 WAV_DIRECTORY = BASE_DIR / "wav_ov1_split1_30db"
 DESC_DIRECTORY = BASE_DIR / "desc_ov1_split1"
@@ -36,22 +36,8 @@ AZI_LIST = np.arange(-180, 180, 10)
 ELE_LIST = np.arange(-90, 90, 10)
 RADIUS_LIST = np.arange(1, 10, 0.5)
 
-MIC_POSITIONS = np.array([
-    [  0.0420,    0.0615,   -0.0410],
-    [ -0.0420,    0.0615,    0.0410],
-    [ -0.0615,    0.0420,   -0.0410],
-    [ -0.0615,   -0.0420,    0.0410],
-    [ -0.0420,   -0.0615,   -0.0410],
-    [  0.0420,   -0.0615,    0.0410],
-    [  0.0615,   -0.0420,   -0.0410],
-    [  0.0615,    0.0420,    0.0410]
-]).T
-
 SOUND_EVENTS = { # sound class name; sound event file name; audio length
-    'siren': list(), # the list contains the sound class's sound event file name and it's audio length
     'whistle': list(),
-    'gunshot': list(),
-    'glassbreak': list()
 }
 
 def get_sound_event_names():
@@ -74,10 +60,6 @@ def create_csv_batch(sound_events_dict, nb_csv, csv_prefix):
             random_index = np.random.randint(len(sound_event_list))
             picked_sound_event_file_name, picked_sound_event_duration = sound_event_list[random_index]
 
-            if picked_sound_event_duration > SECONDS_LENGTH:
-                print(picked_sound_event_file_name, picked_sound_event_duration)
-                sys.exit()
-
             if elapsed_time + picked_sound_event_duration < SECONDS_LENGTH:
                 new_row = {
                     'sound_event_recording': picked_sound_event_file_name,
@@ -91,13 +73,13 @@ def create_csv_batch(sound_events_dict, nb_csv, csv_prefix):
                 elapsed_time += picked_sound_event_duration
             else:
                 break
-
-        DESC_DIRECTORY.mkdir(parents=True, exist_ok=True)
+        
         output_name = csv_prefix + "_" + str(i) + "_desc_30_100.csv"
         final_csv.to_csv((DESC_DIRECTORY / output_name), index=False)
 
 
 if __name__ == '__main__':
+    DESC_DIRECTORY.mkdir(parents=True, exist_ok=True)
     get_sound_event_names()
 
     train_sound_events = {}
